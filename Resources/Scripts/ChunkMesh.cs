@@ -16,24 +16,17 @@ public class ChunkMesh : MonoBehaviour
     List<Vector3> VerticesMesh = new List<Vector3>();
     List<Vector2> UvsMesh = new List<Vector2>();
     List<int> TriangulosMesh = new List<int>();
-    Mesh mesh;
+    public Mesh mesh;
+    public GameObject corpo;
 
     float offsetUv = 1/16f;
 
     public bool atualizar = false;
     public bool preenchida = false;
 
-    void Start()
-    {
-        transform.name = "Chunk (" +posicao.x+ ","+ posicao.y + ","+ posicao.z + ")";
-        mesh = new Mesh();
-        mesh.name = "Mesh Novo";
-        gameObject.GetComponent<MeshFilter>().mesh = mesh;
-
-    }
-
     public void AtualizarMesh()
     {
+        mesh = new Mesh();
         mesh.Clear();
         mesh.vertices = VerticesMesh.ToArray();
         mesh.triangles = TriangulosMesh.ToArray();
@@ -41,79 +34,27 @@ public class ChunkMesh : MonoBehaviour
 
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
-        transform.name = "Chunk (" + posicao.x + "," + posicao.y + "," + posicao.z + ")";
+
+        corpo.transform.name = "Chunk (" + posicao.x + "," + posicao.y + "," + posicao.z + ")";
+        mesh.name = "Mesh Chunk (" + posicao.x + "," + posicao.y + "," + posicao.z + ")";
+
+        corpo.transform.position = new Vector3(posicao.x * 16, posicao.y * 16, posicao.z * 16);
+        corpo.GetComponent<MeshFilter>().mesh = mesh;
+       //Material mat = new Material(Shader.Find("Standard"));
+       // mat.name = "Material Test";
+
+        corpo.GetComponent<MeshRenderer>().material = Resources.Load("Texturas/Materials/texture", typeof(Material)) as Material;
     }
 
-    public void preencher()
-    {
+    public void InstanciarChunk(Transform mundo) {
 
-        //verifica se tem chunk acima
+        corpo = new GameObject();
+        corpo.transform.parent = mundo;
+        corpo.AddComponent<MeshFilter>();
+        corpo.AddComponent<MeshRenderer>();
 
-        int[,,] blocosChunkVizinha = null;
-        if (Mundo.ChunkList.Count > 0)
-        {
-            foreach (var chunk in Mundo.ChunkList)
-            {
-                if (chunk.GetComponent<ChunkMesh>().posicao == posicao + Vector3Int.up)
-                {
+    } 
 
-                    blocosChunkVizinha = chunk.GetComponent<ChunkMesh>().blocos;
-                    break;
-                }
-
-            }
-        }
-
-        for (int x = 0; x < blocos.GetLongLength(0); x++)
-        {
-            for (int z = 0; z < blocos.GetLongLength(2); z++)
-            {
-
-                for (int y = 0; y < (int)blocos.GetLongLength(1); y++)
-                {
-                    if (blocos[x, y, z] != 0) // verifica o bloco de superficie para preencher a partir dele
-                    {
-                        y--;
-                        while (y >= 0)
-                        {
-
-                            blocos[x, y, z] = 1;
-                            y--;
-                        }
-
-                        break;
-                    }
-                    
-                    if (y == 15 && blocosChunkVizinha != null) // se n tem bloco de superficie nessa posicao, preencher tudo
-                    {
-
-
-                        int yv = 0;
-                        while (yv < 16)
-                        {
-                            if (blocos[x, yv, z] != 0){ break;}
-                            yv++;
-                        }
-
-                        if (yv < 16) {
-                            while (y >= 0)
-                            {
-
-                                blocos[x, y, z] = 1;
-                                y--;
-                            }
-
-                            break;
-                        }
-                    }
-                }
-
-            }
-
-
-        }
-
-    }
 
     public void GerarMesh()
     {
@@ -136,18 +77,20 @@ public class ChunkMesh : MonoBehaviour
                         {
                             case -1:
 
-                                idUV = new Vector2(1, 14);
+                                idUV = new Vector2(1, 14); // badrock
                                 break;
                             case 1:
-                                idUV = new Vector2(1, 15);
+                                idUV = new Vector2(1, 15); // pedra
                                 break;
                             case 2:
-                                idUV = new Vector2(2, 14);
+                                idUV = new Vector2(2, 14); // areia
                                 break;
                             case 3:
-                                idUV = new Vector2(0, 15);
+                                idUV = new Vector2(0, 15); // grama
                                 break;
-
+                            case 4:
+                                idUV = new Vector2(14, 15); // agua
+                                break;
                         }
 
 
