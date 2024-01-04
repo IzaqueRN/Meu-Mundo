@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 public class ChunkMesh : MonoBehaviour
 {
     public int[,,] blocos = new int[16, 16, 16];
-    public int[,] alturaSuperficie = new int[16, 16];
+
     public Vector3Int posicao = Vector3Int.zero;
 
     List<Vector3> VerticesMesh = new List<Vector3>();
@@ -20,13 +20,6 @@ public class ChunkMesh : MonoBehaviour
 
     float offsetUv = 1/16f;
 
-    public static float alturaMaxima = 20;
-    public static float alturaMin = 2;
-
-    public static float zoomX = 0.0197f;
-    public static float zoomY = 0.0198f;
-
-    public bool superficie = false;
     public bool atualizar = false;
     public bool preenchida = false;
 
@@ -37,11 +30,6 @@ public class ChunkMesh : MonoBehaviour
         mesh.name = "Mesh Novo";
         gameObject.GetComponent<MeshFilter>().mesh = mesh;
 
-
-
-         //preencher();
-        GerarSuperficie();
-      //  GerarMesh();
     }
 
     public void AtualizarMesh()
@@ -56,7 +44,7 @@ public class ChunkMesh : MonoBehaviour
         transform.name = "Chunk (" + posicao.x + "," + posicao.y + "," + posicao.z + ")";
     }
 
-    public void preencher()
+    public void preencher( int[,] alturaSuperficie)
     {
 
 
@@ -80,37 +68,7 @@ public class ChunkMesh : MonoBehaviour
         }
 
     }
-    public void GerarSuperficie()
-    {
 
-        int alturachunk = 0;
-        for (int x = 0; x < blocos.GetLongLength(0); x++)
-        {
-            for (int z = 0; z < blocos.GetLongLength(2); z++)
-            {
-
-                alturaSuperficie[x,z] = AlturaSuperficie((posicao.x * 16) + x,(posicao.z * 16) + z);
-                alturachunk = alturaSuperficie[x, z] / 16;
-                if (alturachunk > posicao.y) { posicao.y = alturachunk;  }
-            }
-
-        }
-
-        transform.position += new Vector3(0,posicao.y * 16,0);
-
-    }
-
-    public int AlturaSuperficie(int x, int z)
-    {
-
-        float altura = alturaMaxima * Mathf.PerlinNoise(x * zoomX, z * zoomY);
-
-        int y = Mathf.FloorToInt(altura);
-
-        if (y < alturaMin)
-            y = 0;
-        return y;
-    }
     public void GerarMesh()
     {
         VerticesMesh.Clear();

@@ -55,7 +55,7 @@ public class Perlin : MonoBehaviour
 
             tex.Apply();
         }
-       // zoom += 0.0001f;
+        zoom += 0.0001f;
         for (int y = 0; y < tex.height; y++)
         {
 
@@ -74,7 +74,7 @@ public class Perlin : MonoBehaviour
     public Color testePerlin(int x,int y) {
 
         Color color = Color.black;
-        color.g = alturaMaxima * Mathf.PerlinNoise(x * zoom, y * zoom) ;
+        color.g = alturaMaxima * Mathf.PerlinNoise((x + 0.35f) * -zoom, (y + 0.35f) * zoom);
 
         return color;
     }

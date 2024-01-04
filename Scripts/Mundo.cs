@@ -9,55 +9,27 @@ public class Mundo: MonoBehaviour
    List<GameObject> ChunkList = new List<GameObject>();
 
 
-      float alturaMaxima = 20;
-      float alturaMin = 0;
+    float alturaMaxima = 32;
+    float alturaMin = 0;
 
-      float zoomX = 0.0292f;
-      float zoomY = 0.0291f;
+    float zoomX = 0.0292f;
+    float zoomY = 0.0291f;
 
     public bool atualizouChunks = true;
     public long totalBlocks = 0;
+    public Vector3Int addNovoBloco = Vector3Int.zero;
     public Vector3Int posicaoBlocoMundo = Vector3Int.zero;
     public Vector3Int posicaoBlocoNaChunk = Vector3Int.zero;
     public Vector3Int posicaoChunkDoBloco = Vector3Int.zero;
 
     void Start()
     {
-        /*
-            for (int x = 0; x < 20; x++)
-            {
-                for (int z = 0; z < 20; z++)
-                {
-                       
-                    ChunkList.Add(Instantiate(ChunkPrefab, new Vector3(16 * x, 16 * AlturaSuperficie( x, z), 16 * z), Quaternion.identity, transform));
-                }
 
-            }
-
-       // GerarSuperficie(10,10);
-       */
-        GerarTerrenoInicial();
+        GerarSuperficie(10,10);
 
     }
 
-    void GerarTerrenoInicial() {
 
-        for (int x = 0; x < 10; x++)
-        {
-            for (int z = 0; z < 10; z++)
-            {
-
-                ChunkList.Add(Instantiate(ChunkPrefab, new Vector3(16 * x, 0, 16 * z), Quaternion.identity, transform));
-                ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().posicao = new Vector3Int(x,0,z);
-                ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().preenchida = false;
-                ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().atualizar = true;
-            }
-
-        }
-
-
-    }
-    /*
     void GerarSuperficie(int TamX,int TamZ) {
 
         Debug.LogWarning("Gerando Superficie... ");
@@ -85,20 +57,9 @@ public class Mundo: MonoBehaviour
 
         Debug.LogWarning("Superficie Criada, Total Blocos: " + totalBlocos);
     }
-    */
-    public int AlturaSuperficie(int x, int z)
-    {
 
 
-        float altura = alturaMaxima * Mathf.PerlinNoise(x * zoomX, z * zoomY);
 
-        int y = Mathf.FloorToInt(altura);
-
-        if (y < alturaMin)
-            y = 0;
-        return y;
-    }
-    /*
 
     void ADDBloco(Vector3Int posicao, int id)
     {
@@ -131,8 +92,6 @@ public class Mundo: MonoBehaviour
         {
             ChunkList[indexChunk].GetComponent<ChunkMesh>().blocos[posicaoBlocoNaChunk.x, posicaoBlocoNaChunk.y, posicaoBlocoNaChunk.z] = id;
             ChunkList[indexChunk].GetComponent<ChunkMesh>().atualizar = true;
-            ChunkList[indexChunk].GetComponent<ChunkMesh>().preenchida = false;
-            ChunkList[indexChunk].GetComponent<ChunkMesh>().blocosAlturaSuperficie[posicaoBlocoNaChunk.x, posicaoBlocoNaChunk.z] = posicaoBlocoNaChunk.y;
         }
         else
         {
@@ -140,21 +99,29 @@ public class Mundo: MonoBehaviour
             ChunkList.Add(Instantiate(ChunkPrefab, new Vector3(16 * posicaoChunkDoBloco.x, 16 * posicaoChunkDoBloco.y, 16 * posicaoChunkDoBloco.z), Quaternion.identity, transform));
             ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().posicao = posicaoChunkDoBloco;
             ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().atualizar = true;
-            ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().preenchida = false;
             ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().blocos[posicaoBlocoNaChunk.x, posicaoBlocoNaChunk.y, posicaoBlocoNaChunk.z] = id;
-            ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().blocosAlturaSuperficie[posicaoBlocoNaChunk.x, posicaoBlocoNaChunk.z] = posicaoBlocoNaChunk.y;
-
         }
 
-
     }
-    */
+
+    public int AlturaSuperficie(int x, int z)
+    {
+
+        float altura = alturaMaxima * Mathf.PerlinNoise(x * zoomX, z * zoomY);
+
+        int y = Mathf.FloorToInt(altura);
+
+        if (y < alturaMin)
+            y = 0;
+        return y;
+    }
     void Update()
     {
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            Debug.Log("ADD Camada");
+            Debug.Log("ADD Bloco...");
+            ADDBloco(addNovoBloco, -1);
 
         }
         atualizouChunks = true;
@@ -163,11 +130,7 @@ public class Mundo: MonoBehaviour
 
             if (ChunkList[c].GetComponent<ChunkMesh>().atualizar)
             {
-                if (ChunkList[c].GetComponent<ChunkMesh>().preenchida == false) 
-                {
-                    ChunkList[c].GetComponent<ChunkMesh>().preencher();
-                    ChunkList[c].GetComponent<ChunkMesh>().preenchida = true;
-                }
+              
                 ChunkList[c].GetComponent<ChunkMesh>().GerarMesh();
                 ChunkList[c].GetComponent<ChunkMesh>().AtualizarMesh();
                 ChunkList[c].GetComponent<ChunkMesh>().atualizar = false;
