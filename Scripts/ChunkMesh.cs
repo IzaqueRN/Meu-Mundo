@@ -44,22 +44,68 @@ public class ChunkMesh : MonoBehaviour
         transform.name = "Chunk (" + posicao.x + "," + posicao.y + "," + posicao.z + ")";
     }
 
-    public void preencher( int[,] alturaSuperficie)
+    public void preencher()
     {
 
+        //verifica se tem chunk acima
 
-        for (int x = 0; x < alturaSuperficie.GetLongLength(0); x++)
+        int[,,] blocosChunkVizinha = null;
+        if (Mundo.ChunkList.Count > 0)
         {
-            for (int z = 0; z < alturaSuperficie.GetLongLength(1); z++)
+            foreach (var chunk in Mundo.ChunkList)
+            {
+                if (chunk.GetComponent<ChunkMesh>().posicao == posicao + Vector3Int.up)
+                {
+
+                    blocosChunkVizinha = chunk.GetComponent<ChunkMesh>().blocos;
+                    break;
+                }
+
+            }
+        }
+
+        for (int x = 0; x < blocos.GetLongLength(0); x++)
+        {
+            for (int z = 0; z < blocos.GetLongLength(2); z++)
             {
 
-                for (int y = alturaSuperficie[x, z] % 16; y > 0 ; y--)
+                for (int y = 0; y < (int)blocos.GetLongLength(1); y++)
                 {
-                   
-                    if (y == 0) { blocos[x, y, z] = -1; }
-                    if (y > 0) { blocos[x, y, z] = 1; }
-                    if (y > 20) { blocos[x, y, z] = 2; }
+                    if (blocos[x, y, z] != 0) // verifica o bloco de superficie para preencher a partir dele
+                    {
+                        y--;
+                        while (y >= 0)
+                        {
 
+                            blocos[x, y, z] = 1;
+                            y--;
+                        }
+
+                        break;
+                    }
+                    
+                    if (y == 15 && blocosChunkVizinha != null) // se n tem bloco de superficie nessa posicao, preencher tudo
+                    {
+
+
+                        int yv = 0;
+                        while (yv < 16)
+                        {
+                            if (blocos[x, yv, z] != 0){ break;}
+                            yv++;
+                        }
+
+                        if (yv < 16) {
+                            while (y >= 0)
+                            {
+
+                                blocos[x, y, z] = 1;
+                                y--;
+                            }
+
+                            break;
+                        }
+                    }
                 }
 
             }
@@ -96,10 +142,10 @@ public class ChunkMesh : MonoBehaviour
                                 idUV = new Vector2(1, 15);
                                 break;
                             case 2:
-                                idUV = new Vector2(2, 15);
+                                idUV = new Vector2(2, 14);
                                 break;
                             case 3:
-                                idUV = new Vector2(14, 15);
+                                idUV = new Vector2(0, 15);
                                 break;
 
                         }

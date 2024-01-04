@@ -5,18 +5,22 @@ using UnityEngine;
 public class Mundo: MonoBehaviour
 {
 
-   public GameObject ChunkPrefab;
-   List<GameObject> ChunkList = new List<GameObject>();
-
+    public GameObject ChunkPrefab;
+    public static List<GameObject> ChunkList = new List<GameObject>();
+    List<Superficie> superficies = new List<Superficie>();
 
     float alturaMaxima = 32;
-    float alturaMin = 0;
+    float alturaMin = 4;
 
-    float zoomX = 0.0292f;
-    float zoomY = 0.0291f;
+    float zoomX = 0.0092f;
+    float zoomY = 0.0091f;
 
+    public Vector3Int centroTerreno = Vector3Int.zero;
+    
     public bool atualizouChunks = true;
+    
     public long totalBlocks = 0;
+    
     public Vector3Int addNovoBloco = Vector3Int.zero;
     public Vector3Int posicaoBlocoMundo = Vector3Int.zero;
     public Vector3Int posicaoBlocoNaChunk = Vector3Int.zero;
@@ -25,10 +29,36 @@ public class Mundo: MonoBehaviour
     void Start()
     {
 
-        GerarSuperficie(10,10);
+        GerarSuperficie(20,20);
 
     }
 
+    void GerarTerreno(int TamX, int TamZ) {
+
+        int alturaBlocoSuperficie = 0;
+        long totalBlocos = 0;
+        int id = 1;
+
+        Debug.LogWarning("Gerando placas de Superficie... ");
+
+        for (int x = 0; x < TamX; x++)
+        {
+            for (int z = 0; z < TamX; z++)
+            {
+
+                superficies.Add(new Superficie());
+                superficies[superficies.Count - 1].posicao = new Vector2Int(x, z);
+
+
+            }
+
+
+        }
+
+
+
+        Debug.LogWarning("Superficies Criada, Total Blocos: " + totalBlocos);
+    }
 
     void GerarSuperficie(int TamX,int TamZ) {
 
@@ -41,12 +71,15 @@ public class Mundo: MonoBehaviour
             for (int z = 0; z < 16 * TamX; z++)
             {
                 alturaBlocoSuperficie = AlturaSuperficie( x, z);
-                
-                
-               
-                if(alturaBlocoSuperficie == 0) { id = -1; }
+
+                alturaBlocoSuperficie += AlteracaoSuperficie(x, z) + (AlteracaoSuperficie2(x,z) / 2);
+
+
+
+                if (alturaBlocoSuperficie == 0) { id = -1; }
                 if (alturaBlocoSuperficie > 0) { id = 1; }
                 if (alturaBlocoSuperficie > 10 && alturaBlocoSuperficie  < 30) { id = 2; }
+                if (alturaBlocoSuperficie > 30 && alturaBlocoSuperficie < 40) { id = 3; }
 
                 ADDBloco(new Vector3Int(x,alturaBlocoSuperficie,z),id);
                 totalBlocos++;
@@ -57,7 +90,6 @@ public class Mundo: MonoBehaviour
 
         Debug.LogWarning("Superficie Criada, Total Blocos: " + totalBlocos);
     }
-
 
 
 
@@ -115,6 +147,30 @@ public class Mundo: MonoBehaviour
             y = 0;
         return y;
     }
+
+    public int AlteracaoSuperficie(int x, int z)
+    {
+
+        float altura = 8 * Mathf.PerlinNoise(x * 0.033f, z * 0.046f);
+
+        int y = Mathf.FloorToInt(altura);
+
+        if (y < 0)
+            y = 0;
+        return y;
+    }
+
+    public int AlteracaoSuperficie2(int x, int z)
+    {
+
+        float altura = 32 * Mathf.PerlinNoise(z * 0.0003f, x * 0.00033f);
+
+        int y = Mathf.FloorToInt(altura);
+
+        if (y < 6)
+            y = 0;
+        return y;
+    }
     void Update()
     {
 
@@ -130,7 +186,7 @@ public class Mundo: MonoBehaviour
 
             if (ChunkList[c].GetComponent<ChunkMesh>().atualizar)
             {
-              
+                //ChunkList[c].GetComponent<ChunkMesh>().preencher();
                 ChunkList[c].GetComponent<ChunkMesh>().GerarMesh();
                 ChunkList[c].GetComponent<ChunkMesh>().AtualizarMesh();
                 ChunkList[c].GetComponent<ChunkMesh>().atualizar = false;
