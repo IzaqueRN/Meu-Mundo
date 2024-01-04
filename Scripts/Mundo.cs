@@ -36,7 +36,7 @@ public class Mundo: MonoBehaviour
 
        // GerarSuperficie(10,10);
        */
-        GerarSuperficie(10, 10);
+        GerarTerrenoInicial();
 
     }
 
@@ -47,14 +47,17 @@ public class Mundo: MonoBehaviour
             for (int z = 0; z < 10; z++)
             {
 
-                ChunkList.Add(Instantiate(ChunkPrefab, new Vector3(16 * x, 16 * AlturaSuperficie(x, z), 16 * z), Quaternion.identity, transform));
+                ChunkList.Add(Instantiate(ChunkPrefab, new Vector3(16 * x, 0, 16 * z), Quaternion.identity, transform));
+                ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().posicao = new Vector3Int(x,0,z);
+                ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().preenchida = false;
+                ChunkList[ChunkList.Count - 1].GetComponent<ChunkMesh>().atualizar = true;
             }
 
         }
 
 
     }
-
+    /*
     void GerarSuperficie(int TamX,int TamZ) {
 
         Debug.LogWarning("Gerando Superficie... ");
@@ -82,7 +85,7 @@ public class Mundo: MonoBehaviour
 
         Debug.LogWarning("Superficie Criada, Total Blocos: " + totalBlocos);
     }
-
+    */
     public int AlturaSuperficie(int x, int z)
     {
 
@@ -95,7 +98,7 @@ public class Mundo: MonoBehaviour
             y = 0;
         return y;
     }
-
+    /*
 
     void ADDBloco(Vector3Int posicao, int id)
     {
@@ -145,7 +148,7 @@ public class Mundo: MonoBehaviour
 
 
     }
-
+    */
     void Update()
     {
 

@@ -56,7 +56,7 @@ public class Perlin1 : MonoBehaviour
 
             tex.Apply();
         }
-        zoom1 += 0.0001f;
+        //zoom1 += 0.0001f;
         for (int y = 0; y < tex.height; y++)
         {
 

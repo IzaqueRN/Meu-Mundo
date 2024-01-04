@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 public class ChunkMesh : MonoBehaviour
 {
     public int[,,] blocos = new int[16, 16, 16];
-    public int[,] blocosAlturaSuperficie = new int[16, 16];
+    public int[,] alturaSuperficie = new int[16, 16];
     public Vector3Int posicao = Vector3Int.zero;
 
     List<Vector3> VerticesMesh = new List<Vector3>();
@@ -20,11 +20,11 @@ public class ChunkMesh : MonoBehaviour
 
     float offsetUv = 1/16f;
 
-    public static float alturaMaxima = 10;
-    public static float alturaMin = 0;
+    public static float alturaMaxima = 20;
+    public static float alturaMin = 2;
 
-    public static float zoomX = 0.05f;
-    public static float zoomY = 0.051f;
+    public static float zoomX = 0.0197f;
+    public static float zoomY = 0.0198f;
 
     public bool superficie = false;
     public bool atualizar = false;
@@ -40,7 +40,7 @@ public class ChunkMesh : MonoBehaviour
 
 
          //preencher();
-       // GerarSuperficie();
+        GerarSuperficie();
       //  GerarMesh();
     }
 
@@ -53,23 +53,29 @@ public class ChunkMesh : MonoBehaviour
 
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
-
+        transform.name = "Chunk (" + posicao.x + "," + posicao.y + "," + posicao.z + ")";
     }
 
     public void preencher()
     {
 
 
-        for (int x = 0; x < blocosAlturaSuperficie.GetLongLength(0); x++)
+        for (int x = 0; x < alturaSuperficie.GetLongLength(0); x++)
         {
-            for (int z = 0; z < blocosAlturaSuperficie.GetLongLength(1); z++)
+            for (int z = 0; z < alturaSuperficie.GetLongLength(1); z++)
             {
-                for (int y = 0; y < blocosAlturaSuperficie[x, z]; y++)
+
+                for (int y = alturaSuperficie[x, z] % 16; y > 0 ; y--)
                 {
-                    blocos[x, y, z] = 1;
+                   
+                    if (y == 0) { blocos[x, y, z] = -1; }
+                    if (y > 0) { blocos[x, y, z] = 1; }
+                    if (y > 20) { blocos[x, y, z] = 2; }
+
                 }
 
             }
+
 
         }
 
@@ -77,52 +83,32 @@ public class ChunkMesh : MonoBehaviour
     public void GerarSuperficie()
     {
 
-
+        int alturachunk = 0;
         for (int x = 0; x < blocos.GetLongLength(0); x++)
         {
             for (int z = 0; z < blocos.GetLongLength(2); z++)
             {
-                int altura = AlturaSuperficie((int)transform.position.x + x, (int)transform.position.z + z);
 
-                if (altura <= 1)
-                {
-                    blocos[x, altura, z] = -1;
-                }
-                if (altura > 1)
-                {
-
-                    blocos[x, altura, z] = 1;
-                }
-
-
-                for (int y = altura; y < blocos.GetLongLength(1); y++)
-                {
-
-                    if (blocos[x, y, z] == 0 && y < 3)
-                    {
-                        blocos[x, y, z] = 2;
-                    }
-
-                }
-
+                alturaSuperficie[x,z] = AlturaSuperficie((posicao.x * 16) + x,(posicao.z * 16) + z);
+                alturachunk = alturaSuperficie[x, z] / 16;
+                if (alturachunk > posicao.y) { posicao.y = alturachunk;  }
             }
-
 
         }
 
+        transform.position += new Vector3(0,posicao.y * 16,0);
+
     }
 
-    public int AlturaSuperficie(int x,int z) {
+    public int AlturaSuperficie(int x, int z)
+    {
 
-
-        float altura = 16 * Mathf.PerlinNoise(x * zoomX, z * zoomY) ;
+        float altura = alturaMaxima * Mathf.PerlinNoise(x * zoomX, z * zoomY);
 
         int y = Mathf.FloorToInt(altura);
 
-        if (y > 14)
-            y = 15;
-
-
+        if (y < alturaMin)
+            y = 0;
         return y;
     }
     public void GerarMesh()
