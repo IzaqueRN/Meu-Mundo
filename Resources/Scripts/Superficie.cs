@@ -39,6 +39,8 @@ public class Superficie
                 posicaoBlocoMundo.y = altura;
                 idBloco = IdBloco(altura);
 
+                if (posicaoBlocoMundo.y <= 6) { idBloco = 4; posicaoBlocoMundo.y = 5; }
+
                 posicaoYBlocoNaChunk = posicaoBlocoMundo.y % 16;
                 posicaoYChunkDoBloco = posicaoBlocoMundo.y / 16;
 
@@ -82,14 +84,48 @@ public class Superficie
 
     }
 
+    public void preencherChunks()
+    {
 
+
+        for (int c = 0; c < chunksList.Count; c++)
+        {
+            
+
+            for (int x = 0; x < 16; x++)
+            {
+                for (int z = 0; z < 16; z++)
+                {
+                   
+                    int y = 0;
+                    while (y < 16) {
+
+                        if (y + (16 * chunksList[c].posicao.y) > mapAlturas[x,z] - 1) { break;}
+
+                        if (chunksList[c].blocos[x, y, z] == 0) {
+                            chunksList[c].blocos[x, y, z] = 1;
+                        }
+                        else { break;}
+                        y++;
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+
+    }
     public int IdBloco(int altura) {
 
         int id = 0;
 
         if (altura == 0 || altura < 2) { id = -1;}
-        if (altura > 1 || altura < 10 ) { id = 2; }
-        if (altura > 10) { id = 3; }
+        if (altura > 1 || altura < 8 ) { id = 2; }
+        if (altura > 8) { id = 3; }
         if (altura > 15) { id = 1; }
 
 

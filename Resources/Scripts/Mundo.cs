@@ -19,7 +19,8 @@ public class Mundo: MonoBehaviour
     void Start()
     {
 
-        GerarTerreno(30,30);
+        GerarTerreno(60,60);
+
         InstanciarChunks();
 
     }
@@ -37,7 +38,7 @@ public class Mundo: MonoBehaviour
                 superficies.Add(new Superficie());
                 superficies[superficies.Count - 1].posicao = new Vector2Int(x, z);
                 superficies[superficies.Count - 1].GerarSuperficie();
-
+                superficies[superficies.Count - 1].preencherChunks();
             }
 
 

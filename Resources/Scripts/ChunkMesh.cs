@@ -19,7 +19,9 @@ public class ChunkMesh : MonoBehaviour
     public Mesh mesh;
     public GameObject corpo;
 
-    float offsetUv = 1/16f;
+    float offsetUv = 1f/16f;
+    float escala = 0.5f;
+
 
     public bool atualizar = false;
     public bool preenchida = false;
@@ -77,19 +79,19 @@ public class ChunkMesh : MonoBehaviour
                         {
                             case -1:
 
-                                idUV = new Vector2(1, 14); // badrock
+                                idUV = new Vector2(0, 0); // badrock
                                 break;
                             case 1:
-                                idUV = new Vector2(1, 15); // pedra
+                                idUV = new Vector2(3, 15); // pedra
                                 break;
                             case 2:
-                                idUV = new Vector2(2, 14); // areia
+                                idUV = new Vector2(2, 15); // areia
                                 break;
                             case 3:
                                 idUV = new Vector2(0, 15); // grama
                                 break;
                             case 4:
-                                idUV = new Vector2(14, 15); // agua
+                                idUV = new Vector2(1, 15); // agua
                                 break;
                         }
 
@@ -168,10 +170,10 @@ public class ChunkMesh : MonoBehaviour
 
     public void GerarFaceBaixo(int x, int y, int z, Vector2 idUV)
     {
-        VerticesMesh.Add(new Vector3(-0.5f + x, -0.5f + y, -0.5f + z)); // Vertice 0
-        VerticesMesh.Add(new Vector3(0.5f + x, -0.5f + y, -0.5f + z)); // Vertice 1
-        VerticesMesh.Add(new Vector3(0.5f + x, -0.5f + y, 0.5f + z)); // Vertice 2
-        VerticesMesh.Add(new Vector3(-0.5f + x, -0.5f + y, 0.5f + z)); // Vertice 3
+        VerticesMesh.Add(new Vector3(-escala + x, -escala + y, -escala + z)); // Vertice 0
+        VerticesMesh.Add(new Vector3(escala + x, -escala + y, -escala + z)); // Vertice 1
+        VerticesMesh.Add(new Vector3(escala + x, -escala + y, escala + z)); // Vertice 2
+        VerticesMesh.Add(new Vector3(-escala + x, -escala + y, escala + z)); // Vertice 3
 
         // 0,1,2
         // 0,2,3
@@ -187,98 +189,99 @@ public class ChunkMesh : MonoBehaviour
 
         */
 
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y));
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y));
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv) + new Vector2(0.009f, -0.009f)); // quina esquerda inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv) + new Vector2(-0.009f, -0.009f));  // quina direita inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y) + new Vector2(-0.009f, 0.009f)); // ?
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y) + new Vector2(0.009f, 0.009f)); // quina direita superior
 
 
     }
     public void GerarFaceCima(int x, int y, int z, Vector2 idUV)
     {
-        VerticesMesh.Add(new Vector3(-0.5f + x, 0.5f + y, -0.5f + z)); // Vertice 4
-        VerticesMesh.Add(new Vector3(0.5f + x, 0.5f + y, -0.5f + z)); // Vertice 5
-        VerticesMesh.Add(new Vector3(0.5f + x, 0.5f + y, 0.5f + z)); // Vertice 6
-        VerticesMesh.Add(new Vector3(-0.5f + x, 0.5f + y, 0.5f + z)); // Vertice 7
+        VerticesMesh.Add(new Vector3(-escala + x, escala + y, -escala + z)); // Vertice 4
+        VerticesMesh.Add(new Vector3(escala + x, escala + y, -escala + z)); // Vertice 5
+        VerticesMesh.Add(new Vector3(escala + x, escala + y, escala + z)); // Vertice 6
+        VerticesMesh.Add(new Vector3(-escala + x, escala + y, escala + z)); // Vertice 7
 
 
         TriangulosMesh.Add(VerticesMesh.Count - 4); TriangulosMesh.Add(VerticesMesh.Count - 1); TriangulosMesh.Add(VerticesMesh.Count - 2);
         TriangulosMesh.Add(VerticesMesh.Count - 4); TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 3);
 
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y));
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y));
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv) + new Vector2(0.009f, -0.009f)); // quina esquerda inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv) + new Vector2(-0.009f, -0.009f));  // quina direita inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y) + new Vector2(-0.009f, 0.009f)); // ?
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y) + new Vector2(0.009f, 0.009f)); // quina direita superior
+
     }
 
     public void GerarFaceEsquerda(int x, int y, int z, Vector2 idUV)
     {
-        VerticesMesh.Add(new Vector3(-0.5f + x, 0.5f + y, 0.5f + z)); // Vertice 7
-        VerticesMesh.Add(new Vector3(-0.5f + x, -0.5f + y, 0.5f + z)); // Vertice 3
-        VerticesMesh.Add(new Vector3(-0.5f + x, -0.5f + y, -0.5f + z)); // Vertice 0
-        VerticesMesh.Add(new Vector3(-0.5f + x, 0.5f + y, -0.5f + z)); // Vertice 4
+        VerticesMesh.Add(new Vector3(-escala + x, escala + y, escala + z)); // Vertice 7
+        VerticesMesh.Add(new Vector3(-escala + x, -escala + y, escala + z)); // Vertice 3
+        VerticesMesh.Add(new Vector3(-escala + x, -escala + y, -escala + z)); // Vertice 0
+        VerticesMesh.Add(new Vector3(-escala + x, escala + y, -escala + z)); // Vertice 4
 
         // 0,1,2
         // 0,2,3
         TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 3); TriangulosMesh.Add(VerticesMesh.Count - 4);
         TriangulosMesh.Add(VerticesMesh.Count - 1); TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 4);
 
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y));
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y));
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv) + new Vector2(0.009f, -0.009f)); // quina esquerda inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv) + new Vector2(-0.009f, -0.009f));  // quina direita inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y) + new Vector2(-0.009f, 0.009f)); // ?
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y) + new Vector2(0.009f, 0.009f)); // quina direita superior
 
     }
 
     public void GerarFaceDireita(int x, int y, int z, Vector2 idUV)
     {
-        VerticesMesh.Add(new Vector3(0.5f + x, 0.5f + y, -0.5f + z)); // Vertice 5
-        VerticesMesh.Add(new Vector3(0.5f + x, -0.5f + y, -0.5f + z)); // Vertice 1
-        VerticesMesh.Add(new Vector3(0.5f + x, -0.5f + y, 0.5f + z)); // Vertice 2
-        VerticesMesh.Add(new Vector3(0.5f + x, 0.5f + y, 0.5f + z)); // Vertice 6
+        VerticesMesh.Add(new Vector3(escala + x, escala + y, -escala + z)); // Vertice 5
+        VerticesMesh.Add(new Vector3(escala + x, -escala + y, -escala + z)); // Vertice 1
+        VerticesMesh.Add(new Vector3(escala + x, -escala + y, escala + z)); // Vertice 2
+        VerticesMesh.Add(new Vector3(escala + x, escala + y, escala + z)); // Vertice 6
 
         // 0,1,2
         // 0,2,3
         TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 3); TriangulosMesh.Add(VerticesMesh.Count - 4);
         TriangulosMesh.Add(VerticesMesh.Count - 1); TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 4);
-       
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y));
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y));
+
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv) + new Vector2(0.009f, -0.009f)); // quina esquerda inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv) + new Vector2(-0.009f, -0.009f));  // quina direita inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y) + new Vector2(-0.009f, 0.009f)); // ?
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y) + new Vector2(0.009f, 0.009f)); // quina direita superior
 
     }
 
     public void GerarFaceFrente(int x, int y, int z, Vector2 idUV)
     {
-        VerticesMesh.Add(new Vector3(0.5f + x, -0.5f + y, 0.5f + z)); // Vertice 2
-        VerticesMesh.Add(new Vector3(-0.5f + x, -0.5f + y, 0.5f + z)); // Vertice 3
-        VerticesMesh.Add(new Vector3(-0.5f + x, 0.5f + y, 0.5f + z)); // Vertice 7
-        VerticesMesh.Add(new Vector3(0.5f + x, 0.5f + y, 0.5f + z)); // Vertice 6
+        VerticesMesh.Add(new Vector3(escala + x, -escala + y, escala + z)); // Vertice 2
+        VerticesMesh.Add(new Vector3(-escala + x, -escala + y, escala + z)); // Vertice 3
+        VerticesMesh.Add(new Vector3(-escala + x, escala + y, escala + z)); // Vertice 7
+        VerticesMesh.Add(new Vector3(escala + x, escala + y, escala + z)); // Vertice 6
 
         TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 3); TriangulosMesh.Add(VerticesMesh.Count - 4);
         TriangulosMesh.Add(VerticesMesh.Count - 1); TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 4);
 
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y));
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y));
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv) + new Vector2(0.009f, -0.009f)); // quina esquerda inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv) + new Vector2(-0.009f, -0.009f));  // quina direita inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y) + new Vector2(-0.009f, 0.009f)); // ?
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y) + new Vector2(0.009f, 0.009f)); // quina direita superior
 
     }
     public void GerarFaceTras(int x, int y, int z, Vector2 idUV)
     {
-        VerticesMesh.Add(new Vector3(-0.5f + x, -0.5f + y, -0.5f + z)); // Vertice 0
-        VerticesMesh.Add(new Vector3(0.5f + x, -0.5f + y, -0.5f + z)); // Vertice 1
-        VerticesMesh.Add(new Vector3(0.5f + x, 0.5f + y, -0.5f + z)); // Vertice 5
-        VerticesMesh.Add(new Vector3(-0.5f + x, 0.5f + y, -0.5f + z)); // Vertice 4
+        VerticesMesh.Add(new Vector3(-escala + x, -escala + y, -escala + z)); // Vertice 0
+        VerticesMesh.Add(new Vector3(escala + x, -escala + y, -escala + z)); // Vertice 1
+        VerticesMesh.Add(new Vector3(escala + x, escala + y, -escala + z)); // Vertice 5
+        VerticesMesh.Add(new Vector3(-escala + x, escala + y, -escala + z)); // Vertice 4
 
         TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 3); TriangulosMesh.Add(VerticesMesh.Count - 4);
         TriangulosMesh.Add(VerticesMesh.Count - 1); TriangulosMesh.Add(VerticesMesh.Count - 2); TriangulosMesh.Add(VerticesMesh.Count - 4);
 
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv));
-        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y));
-        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y));
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, (offsetUv * idUV.y) + offsetUv) + new Vector2(0.009f, -0.009f)); // quina esquerda inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, (offsetUv * idUV.y) + offsetUv) + new Vector2(-0.009f, -0.009f));  // quina direita inferior
+        UvsMesh.Add(new Vector2((offsetUv * idUV.x) + offsetUv, offsetUv * idUV.y) + new Vector2(-0.009f, 0.009f)); // ?
+        UvsMesh.Add(new Vector2(offsetUv * idUV.x, offsetUv * idUV.y) + new Vector2(0.009f, 0.009f)); // quina direita superior
 
     }
 
